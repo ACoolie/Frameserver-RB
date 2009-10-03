@@ -1,6 +1,7 @@
 #include <ruby.h>
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
 
 VALUE rb_avc, rb_avcinput, rb_avcframe, rb_avcoutput;
 void Init_libAVC();

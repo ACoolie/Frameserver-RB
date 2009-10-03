@@ -11,8 +11,9 @@ include(FindPkgConfig)
 find_package(Ruby REQUIRED)
 pkg_search_module(LAVC REQUIRED libavcodec)
 pkg_search_module(LAVF REQUIRED libavformat)
+pkg_search_module(SWS REQUIRED libswscale)
 
 include_directories(${RUBY_HDR_DIR} ${RUBY_HDR_DIR}/${RUBY_SITEARCH})
 add_library(AVC SHARED ${SRCS})
-target_link_libraries(AVC ${RUBY_LIBRARY} ${LAVC_LIBRARIES} ${LAVF_LIBRARIES})
+target_link_libraries(AVC ${RUBY_LIBRARY} ${LAVC_LIBRARIES} ${LAVF_LIBRARIES} ${SWS_LIBRARIES})
 

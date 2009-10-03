@@ -36,7 +36,9 @@ static VALUE input_frame(VALUE self) {
 			avcodec_decode_video2(formatContext->streams[stream_id]->codec, frame, &finished, &packet);
 		av_free_packet(&packet);
 	}
-	return Data_Wrap_Struct(rb_avcframe, 0, frame_free, frame);
+	VALUE v = Data_Wrap_Struct(rb_avcframe, 0, frame_free, frame);
+	rb_iv_set(v, "@__format_context", self);
+	return v;
 }
 
 static VALUE input_seek(VALUE self, VALUE frame) {
@@ -52,6 +54,13 @@ static VALUE input_width(VALUE self, VALUE frame) {
 }
 static VALUE input_height(VALUE self, VALUE frame) {
 	return rb_iv_get(self, "@height");
+}
+
+static VALUE input_duration(VALUE self) {
+	AVFormatContext *formatContext = NULL;
+	Data_Get_Struct(self, AVFormatContext, formatContext);
+	AVStream *stream = formatContext->streams[FIX2INT(rb_iv_get(self, "@stream_id"))];
+	return rb_int_new(av_rescale(formatContext->duration, stream->r_frame_rate.num, stream->r_frame_rate.den * AV_TIME_BASE));
 }
 
 static void input_free(AVFormatContext *formatContext) {
@@ -70,4 +79,5 @@ void Init_AVCInput() {
 	rb_define_method(rb_avcinput, "seek", input_seek, 1);
 	rb_define_method(rb_avcinput, "width", input_width, 0);
 	rb_define_method(rb_avcinput, "height", input_height, 0);
+	rb_define_method(rb_avcinput, "duration", input_duration, 0);
 }

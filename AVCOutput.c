@@ -2,7 +2,7 @@
 
 static VALUE output_initialize(VALUE self, VALUE input) {
 	AVFormatContext *f = NULL;
-	AVCodecContext *c, *codecContext = NULL;
+	AVCodecContext *codecContext = NULL;
 	Data_Get_Struct(self, AVCodecContext, codecContext);
 	avcodec_get_context_defaults2(codecContext, CODEC_TYPE_VIDEO);
 	AVCodec *codec = avcodec_find_encoder(CODEC_ID_RAWVIDEO);

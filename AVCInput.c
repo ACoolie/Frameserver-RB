@@ -16,6 +16,8 @@ static VALUE input_initialize(VALUE self, VALUE file) {
 		fprintf(stderr, "Failed to open codec.");
 		exit(-1);
 	}
+	rb_iv_set(self, "@width", INT2FIX(c->width));
+	rb_iv_set(self, "@height", INT2FIX(c->height));
 	return self;
 }
 
@@ -45,6 +47,13 @@ static VALUE input_seek(VALUE self, VALUE frame) {
 	return self;
 }
 
+static VALUE input_width(VALUE self, VALUE frame) {
+	return rb_iv_get(self, "@width");
+}
+static VALUE input_height(VALUE self, VALUE frame) {
+	return rb_iv_get(self, "@height");
+}
+
 static void input_free(AVFormatContext *formatContext) {
 	av_free(formatContext);
 }
@@ -59,4 +68,6 @@ void Init_AVCInput() {
 	rb_define_method(rb_avcinput, "initialize", input_initialize, 1);
 	rb_define_method(rb_avcinput, "frame", input_frame, 0);
 	rb_define_method(rb_avcinput, "seek", input_seek, 1);
+	rb_define_method(rb_avcinput, "width", input_width, 0);
+	rb_define_method(rb_avcinput, "height", input_height, 0);
 }

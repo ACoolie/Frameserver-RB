@@ -1,6 +1,9 @@
 class Video < Filter
+  attr_reader :width, :height
   def initialize(f)
     @source = AVC::Input.new(f)
+    @width = @source.width
+    @height = @source.height
   end
   def frame()
     @source.frame
@@ -8,7 +11,7 @@ class Video < Filter
   def seek(frame)
     @source.seek(frame)
   end
-  def trim(start)
-    TrimFilter.new(self, start)
+  def trim(start, e)
+    TrimFilter.new(self, start, e)
   end
 end

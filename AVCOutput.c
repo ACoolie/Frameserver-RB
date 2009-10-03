@@ -4,14 +4,12 @@ static VALUE output_initialize(VALUE self, VALUE input) {
 	AVFormatContext *f = NULL;
 	AVCodecContext *c, *codecContext = NULL;
 	Data_Get_Struct(self, AVCodecContext, codecContext);
-	Data_Get_Struct(input, AVFormatContext, f);
-	c = f->streams[FIX2INT(rb_iv_get(input, "@stream_id"))]->codec;
 	avcodec_get_context_defaults2(codecContext, CODEC_TYPE_VIDEO);
 	AVCodec *codec = avcodec_find_encoder(CODEC_ID_RAWVIDEO);
 	codecContext->pix_fmt = PIX_FMT_YUV420P;
 	codecContext->time_base = (AVRational){1,25};
-	codecContext->width = c->width;
-	codecContext->height = c->height;
+	codecContext->width = FIX2INT(rb_iv_get(input, "@width"));
+	codecContext->height = FIX2INT(rb_iv_get(input, "@height"));
 	if(avcodec_open(codecContext, codec) != 0) {
 		fprintf(stderr, "Failed to open codec.");
 		exit(-1);
@@ -21,6 +19,8 @@ static VALUE output_initialize(VALUE self, VALUE input) {
 }
 
 static VALUE output_encode_frame(VALUE self, VALUE frame) {
+	if(frame == Qnil)
+		return Qfalse;
 	AVCodecContext *codecContext = NULL;
 	AVFrame *v = NULL;
 	Data_Get_Struct(self, AVCodecContext, codecContext);

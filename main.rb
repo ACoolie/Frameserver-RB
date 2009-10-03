@@ -30,4 +30,4 @@ i = 0
 while e.encode_frame(v.frame)
   i += 1
 end
-$stderr.puts "[fs] encoded %d frames. %ffps %dx%d\n" % [i, i/(Time.now - t), v.width, v.height]
+$stderr.puts "[fs] encoded %d frames, %ffps, %dx%d\n" % [i, i/(Time.now - t), v.width, v.height]

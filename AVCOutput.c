@@ -25,6 +25,9 @@ static VALUE output_encode_frame(VALUE self, VALUE frame) {
 	AVFrame *v = NULL;
 	Data_Get_Struct(self, AVCodecContext, codecContext);
 	Data_Get_Struct(frame, AVFrame, v);
+	if(!v || !v->data[0]) {
+		return Qfalse;
+	}
 	int bufsize = avpicture_get_size(codecContext->pix_fmt, codecContext->width, codecContext->height);
 	uint8_t *buffer = malloc(bufsize);
 	int size = avcodec_encode_video(codecContext, buffer, bufsize, v);
